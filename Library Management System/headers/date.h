@@ -31,7 +31,7 @@ class Date
         const system_clock::time_point& getTimePoint() const;
         string getDateString() const;
         
-        auto operator<=>(const Date&) const = default; // C++20
+        auto operator<=>(const Date&) const = default;
 
         friend ostream& operator<<(ostream&, const Date&);
         friend long long daysDiff(const Date&, const Date&);

@@ -5,6 +5,7 @@
 #include "returnbook.h"
 #include "book.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -27,6 +28,8 @@ class Reader
 
         Borrow* borrowBook(const Book&);
         ReturnBook* returnBook(const Book&);
+
+        friend ostream& operator<<(ostream&, const Reader&);
 };
 
 #endif

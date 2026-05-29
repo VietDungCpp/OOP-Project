@@ -8,6 +8,7 @@
                 "-std=c++23",
                 "main.cpp",
                 "sources/*.cpp",
+                "test/*.cpp",
                 "-Iheaders",
                 "-o",
                 "main.exe"

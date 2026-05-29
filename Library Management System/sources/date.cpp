@@ -29,7 +29,7 @@ void Date::date_to_tp()
 
     if (!ymd.ok())
     {
-        throw invalid_argument("Invalid date: " + getDate());
+        throw invalid_argument("Invalid date: " + getDateString());
     }
 
     tp = sys_days(ymd);
@@ -97,7 +97,7 @@ const system_clock::time_point& Date::getTimePoint() const
     return tp;
 }
 
-string Date::getDate() const
+string Date::getDateString() const
 {
     ostringstream oss;
     oss << setw(2) << setfill('0') << day << '/'
@@ -108,7 +108,7 @@ string Date::getDate() const
 
 ostream& operator<<(ostream& os, const Date& d)
 {
-    os << d.getDate();
+    os << d.getDateString();
     return os;
 }
 

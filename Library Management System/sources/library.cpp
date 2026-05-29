@@ -1,5 +1,4 @@
 #include "library.h"
-#include <stdexcept>
 #include <iostream>
 #include <algorithm>
 
@@ -28,18 +27,18 @@ void Library::addBooks(const vector<Book*>& book)
 
 bool Library::deleteBook(Book* book)
 {
-    for (Borrow* bw : borrows)
+    for (const Borrow* bw : borrows)
     {
         if (bw->getBookID() == book->getID())
         {
-            throw runtime_error("Cannot delete " + book->getTitle() + ": currently borrowed");
+            return false;
         }
     }
 
     auto it = find(books.begin(), books.end(), book);
     if (it == books.end())
     {
-        throw runtime_error("Book " + book->getTitle() + " not found in library");
+        return false;
     }
 
     books.erase(it);
@@ -63,8 +62,33 @@ void Library::listReaders() const
 {
     for (const Reader* r : readers)
     {
-        cout << r->getID() << " - " << r->getName() << '\n';
+        cout << *r;
     }
+}
+
+bool Library::deleteReader(Reader* reader)
+{
+    for (const Borrow* bw : borrows)
+    {
+        if (bw->getReaderID() == reader->getID())
+        {
+            return false;
+        }
+    }
+
+    auto it = find(readers.begin(), readers.end(), reader);
+    if (it == readers.end())
+    {
+        return false;
+    }
+
+    // if (!checkReader(reader))
+    // {
+    //     return false;
+    // }
+
+    readers.erase(it);
+    return true;
 }
 
 bool Library::checkBook(const Book* book) const
@@ -74,15 +98,9 @@ bool Library::checkBook(const Book* book) const
 
 bool Library::checkBook(int id) const
 {
-    for (const Book* b : books)
-    {
-        if (id == b->getID())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return any_of(books.begin(), books.end(), [id](const Book* b) {
+        return b->getID() == id;
+    });
 }
 
 bool Library::checkReader(const Reader* reader) const
@@ -92,14 +110,9 @@ bool Library::checkReader(const Reader* reader) const
 
 bool Library::checkReader(int id) const
 {
-    for (const Reader* r : readers)
-    {
-        if (r->getID() == id)
-        {
-            return true;
-        }
-    }
-    return false;
+    return any_of(readers.begin(), readers.end(), [id](const Reader* r) {
+        return r->getID() == id;
+    });
 }
 
 bool Library::letBorrow(Borrow* bo)

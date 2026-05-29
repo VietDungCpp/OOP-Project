@@ -23,12 +23,12 @@ class Library
         void addBooks(const vector<Book*>&);
         bool deleteBook(Book*);
         void listBooks() const;
+        bool checkBook(const Book*) const;
+        bool checkBook(int) const;
 
         void addReader(Reader*);
         void listReaders() const;
-
-        bool checkBook(const Book*) const;
-        bool checkBook(int) const;
+        bool deleteReader(Reader*);
         bool checkReader(const Reader*) const;
         bool checkReader(int) const;
 

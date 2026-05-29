@@ -12,7 +12,8 @@ class Date
 {
     private:
         system_clock::time_point tp;
-        int day, month, year;
+        unsigned int day, month;
+        int year;
         
         void tp_to_date();
         void date_to_tp();
@@ -28,7 +29,7 @@ class Date
         void setDate(int, int, int);
 
         const system_clock::time_point& getTimePoint() const;
-        string getDate() const;
+        string getDateString() const;
         
         auto operator<=>(const Date&) const = default; // C++20
 

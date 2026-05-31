@@ -21,20 +21,24 @@ class Library
 
         void addBook(Book*);
         void addBooks(const vector<Book*>&);
-        bool deleteBook(Book*);
+        bool deleteBook(int);
         void listBooks() const;
-        bool checkBook(const Book*) const;
-        bool checkBook(int) const;
 
         void addReader(Reader*);
         void listReaders() const;
-        bool deleteReader(Reader*);
-        bool checkReader(const Reader*) const;
-        bool checkReader(int) const;
+        bool deleteReader(int);
+
+        Borrow* borrowBook(int, int);
+        ReturnBook* returnBook(int, int);
+        void listBorrows(int) const;
+    private:
+        Book* findBook(int);
+        Reader* findReader(int);
+        const Book* findBook(int) const;
+        const Reader* findReader(int) const;
 
         bool letBorrow(Borrow*);
         bool acceptReturn(ReturnBook*);
-        void listBorrows() const;
-};
+    };
 
 #endif

@@ -7,7 +7,7 @@ using namespace std;
 
 int Menu::inputChoice(const string& s)
 {
-    int val = 0;
+    int val;
     while (true)
     {
         cout << s;
@@ -15,7 +15,7 @@ int Menu::inputChoice(const string& s)
 
         if (cin.good())
         {
-            cin.ignore();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             return val;
         }
 
@@ -46,14 +46,14 @@ int Menu::show() const
     cout << "  0. Back / Exit\n";
     for (const MenuItem* item : items)
     {
-        cout << "  " << item->getNumber() << ". " << item->getName() << '\n';
+        cout << "  " << item->getIndex() << ". " << item->getName() << '\n';
     }
     
     int choice = inputChoice("  Choice: ");
 
     for (const MenuItem* item : items)
     {
-        if (item->getNumber() == choice)
+        if (item->getIndex() == choice)
         {
             item->execute();
             return choice;

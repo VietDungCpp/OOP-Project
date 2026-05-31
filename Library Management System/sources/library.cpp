@@ -8,129 +8,154 @@ Library::Library() {}
 
 Library::~Library()
 {
-    for (Borrow* b : borrows)
+    for (Book* b : books)
     {
         delete b;
     }
+
+    for (Reader* r : readers)
+    {
+        delete r;
+    }
+
+    for (Borrow* bw : borrows)
+    {
+        delete bw;
+    }
+
+    books.clear();
+    readers.clear();
     borrows.clear();
 }
 
-void Library::addBook(Book* book)
+Book* Library::findBook(int id)
 {
-    books.push_back(book);
+    auto it = find_if(books.begin(), books.end(), [id](Book* b) {
+        return b->getID() == id;
+    });
+
+    return (it != books.end()) ? *it : nullptr;
 }
 
-void Library::addBooks(const vector<Book*>& book)
+const Book* Library::findBook(int id) const
 {
-    books.insert(books.end(), book.begin(), book.end());
+    auto it = find_if(books.begin(), books.end(), [id](Book* b) {
+        return b->getID() == id;
+    });
+
+    return (it != books.end()) ? *it : nullptr;
 }
 
-bool Library::deleteBook(Book* book)
+Reader* Library::findReader(int id)
 {
-    for (const Borrow* bw : borrows)
+    auto it = find_if(readers.begin(), readers.end(), [id](Reader* r) {
+        return r->getID() == id;
+    });
+    
+    return (it != readers.end()) ? *it : nullptr;
+}
+
+const Reader* Library::findReader(int id) const
+{
+    auto it = find_if(readers.begin(), readers.end(), [id](Reader* r) {
+        return r->getID() == id;
+    });
+    
+    return (it != readers.end()) ? *it : nullptr;
+}
+
+void Library::addBook(Book* b)
+{
+    if (b)
     {
-        if (bw->getBookID() == book->getID())
-        {
-            return false;
-        }
+        books.push_back(b);
     }
+}
 
-    auto it = find(books.begin(), books.end(), book);
+void Library::addBooks(const vector<Book*>& b)
+{
+    books.insert(books.end(), b.begin(), b.end());
+}
+
+bool Library::deleteBook(int id)
+{
+    auto it = find_if(books.begin(), books.end(), [id](Book* b) {
+        return b->getID() == id; 
+    });
+
     if (it == books.end())
     {
         return false;
     }
 
+    delete *it;
     books.erase(it);
+
     return true;
 }
 
 void Library::listBooks() const
 {
-    for (Book* b : books)
+    for (const Book* b : books)
     {
-        cout << *b;
+        cout << *b << '\n';
     }
 }
 
-void Library::addReader(Reader* reader)
+void Library::addReader(Reader* r)
 {
-    readers.push_back(reader);
+    if (r)
+    {
+        readers.push_back(r);
+    }
+}
+
+bool Library::deleteReader(int id)
+{
+    auto it = find_if(readers.begin(), readers.end(), [id](Reader* r) {
+        return r->getID() == id;
+    });
+
+    if (it == readers.end())
+    {
+        return false;
+    }
+
+    delete *it;
+    readers.erase(it);
+
+    return true;
 }
 
 void Library::listReaders() const
 {
     for (const Reader* r : readers)
     {
-        cout << *r;
+        cout << *r << '\n';
     }
 }
 
-bool Library::deleteReader(Reader* reader)
+bool Library::letBorrow(Borrow* bw)
 {
-    for (const Borrow* bw : borrows)
-    {
-        if (bw->getReaderID() == reader->getID())
-        {
-            return false;
-        }
-    }
-
-    auto it = find(readers.begin(), readers.end(), reader);
-    if (it == readers.end())
+    if (!bw)
     {
         return false;
     }
 
-    // if (!checkReader(reader))
-    // {
-    //     return false;
-    // }
+    borrows.push_back(bw);
 
-    readers.erase(it);
     return true;
 }
 
-bool Library::checkBook(const Book* book) const
+bool Library::acceptReturn(ReturnBook* rb)
 {
-    return checkBook(book->getID());
-}
-
-bool Library::checkBook(int id) const
-{
-    return any_of(books.begin(), books.end(), [id](const Book* b) {
-        return b->getID() == id;
-    });
-}
-
-bool Library::checkReader(const Reader* reader) const
-{
-    return checkReader(reader->getID());
-}
-
-bool Library::checkReader(int id) const
-{
-    return any_of(readers.begin(), readers.end(), [id](const Reader* r) {
-        return r->getID() == id;
-    });
-}
-
-bool Library::letBorrow(Borrow* bo)
-{
-    if (checkReader(bo->getReaderID()) && checkBook(bo->getBookID()))
+    if (!rb)
     {
-        borrows.push_back(bo);
-        return true;
+        return false;
     }
 
-    return false;
-}
-
-bool Library::acceptReturn(ReturnBook* re)
-{
     auto it = find_if(borrows.begin(), borrows.end(), [&](const Borrow* bw) {
-        return bw->getReaderID() == re->getReaderID()
-            && bw->getBookID() == re->getBookID();
+        return bw->getReaderID() == rb->getReaderID() && bw->getBookID() == rb->getBookID();
     });
 
     if (it == borrows.end())
@@ -144,17 +169,75 @@ bool Library::acceptReturn(ReturnBook* re)
     return true;
 }
 
-void Library::listBorrows() const
+Borrow* Library::borrowBook(int r_id, int b_id)
 {
-    if (borrows.empty())
+    Reader* r = findReader(r_id);
+    Book* b = findBook(b_id);
+
+    if (!r || !b)
+    {
+        return nullptr;
+    }
+
+    Borrow* bw = r->borrowBook(*b);
+
+    if (!letBorrow(bw))
+    {
+        delete bw;
+        return nullptr;
+    }
+
+    return bw;
+}
+
+ReturnBook* Library::returnBook(int r_id, int b_id)
+{
+    Reader* r = findReader(r_id);
+    Book* b = findBook(b_id);
+
+    if (!r || !b)
+    {
+        return nullptr;
+    }
+
+    ReturnBook* rb = r->returnBook(*b);
+
+    if (!acceptReturn(rb))
+    {
+        delete rb;
+        return nullptr;
+    }
+
+    return rb;
+}
+
+void Library::listBorrows(int r_id) const
+{
+    const Reader* r = findReader(r_id);
+    if (!r)
     {
         return;
     }
 
+    bool fo = false;
     for (const Borrow* bw : borrows)
     {
-        cout << "Reader " << bw->getReaderID()
-             << " - Book " << bw->getBookID()
-             << " (borrowed: " << bw->getDate() << ")\n";
+        if (bw->getReaderID() != r_id)
+        {
+            continue;
+        }
+
+        const Book* b = findBook(bw->getBookID());
+
+        cout << "Reader : " << r->getID() << " - " << r->getName() << '\n'
+             << "Book   : " << b->getID()   << " - " << b->getTitle()  << '\n'
+             << "Borrowed: " << bw->getDate() << '\n'
+             << "-----\n";
+        fo = true;
+    }
+
+    if (!fo)
+    {
+        return;
     }
 }

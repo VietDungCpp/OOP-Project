@@ -6,7 +6,15 @@ using namespace std;
 
 Book::Book(int id, string title, string isbn) : book_id(id), book_title(title), book_isbn(isbn) {}
 
-Book::~Book() {}
+Book::~Book()
+{
+    for (Author* a : authors)
+    {
+        delete a;
+    }
+
+    authors.clear();
+}
 
 int Book::getID() const
 {
@@ -30,7 +38,10 @@ vector<Author*> Book::getAuthor() const
 
 void Book::addAuthor(Author* au)
 {
-    authors.push_back(au);
+    if (au)
+    {
+        authors.push_back(au);
+    }
 }
 
 void Book::addAuthors(const vector<Author*>& aus)

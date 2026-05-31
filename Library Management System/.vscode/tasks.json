@@ -9,6 +9,7 @@
                 "main.cpp",
                 "sources/*.cpp",
                 "test/*.cpp",
+                "utility/*.cpp",
                 "-Iheaders",
                 "-o",
                 "main.exe"

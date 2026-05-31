@@ -2,11 +2,12 @@
 
 using namespace std;
 
-MenuItem::MenuItem(int number, string name, function<void()> action) : item_number(number), item_name(name), item_action(action) {}
+MenuItem::MenuItem(int idx, string name, function<void()> action) : item_index(idx),
+                                                                       item_name(name), item_action(action) {}
 
-int MenuItem::getNumber() const
+int MenuItem::getIndex() const
 {
-    return item_number;
+    return item_index;
 }
 
 string MenuItem::getName() const

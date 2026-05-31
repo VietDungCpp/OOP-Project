@@ -1,27 +1,10 @@
-#ifndef MENU_H
-#define MENU_H
+#ifndef LIBRARYMENU_H
+#define LIBRARYMENU_H
 
-#include <string>
-#include "menuitem.h"
 #include "library.h"
+#include <string>
 
 using namespace std;
-
-class Menu
-{
-    private:
-        string title;
-        vector<MenuItem*> items;
-    public:
-        Menu(string);
-        ~Menu();
-
-        void addItem(MenuItem*);
-        int show() const;
-        void run() const;
-    private:
-        static int inputChoice(const string&);
-};
 
 class LibraryMenu
 {

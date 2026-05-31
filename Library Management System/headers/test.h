@@ -5,3 +5,4 @@ void testAuthor();
 void testDate();
 void testReader();
 void testLibrary();
+void testMenuItem();

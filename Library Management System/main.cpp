@@ -1,6 +1,9 @@
-#include "test.h"
+#include "librarymenu.h"
 
 int main()
 {
-    testDate();
+    Library lib;
+    LibraryMenu controller(lib);
+
+    controller.run();
 }

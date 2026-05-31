@@ -9,12 +9,12 @@ using namespace std;
 class MenuItem
 {
     private:
-        int item_number;
+        int item_index;
         string item_name;
         function<void()> item_action;
     public:
         MenuItem(int, string, function<void()>);
-        int getNumber() const;
+        int getIndex() const;
         string getName() const;
         void execute() const;
 };
